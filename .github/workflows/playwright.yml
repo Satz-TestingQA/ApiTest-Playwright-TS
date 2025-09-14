@@ -33,27 +33,27 @@ jobs:
       run: npx playwright install --with-deps
 
     - name: Run Playwright UI tests
-      run: npm run test_ui
+      run: npm run test
 
-    - name: Generate Allure Report
-      if: always()
-      run: |
-        npm run report:generate
-        mkdir -p reports/allure
-        cp -r allure-report/* reports/allure/
+    # - name: Generate Allure Report
+    #   if: always()
+    #   run: |
+    #     npm run report:generate
+    #     mkdir -p reports/allure
+    #     cp -r allure-report/* reports/allure/
 
-    - name: Zip Allure Report
-      if: always()
-      run: |
-        powershell Compress-Archive -Path reports/allure/* -DestinationPath allure-report.zip
+    # - name: Zip Allure Report
+    #   if: always()
+    #   run: |
+    #     powershell Compress-Archive -Path reports/allure/* -DestinationPath allure-report.zip
 
-    - name: Upload zipped Allure report artifact
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: allure-report
-        path: allure-report.zip
-        retention-days: 2
+    # - name: Upload zipped Allure report artifact
+    #   if: always()
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: allure-report
+    #     path: allure-report.zip
+    #     retention-days: 2
 
     # - name: Send email with Allure report (on failure only)
     #   if: failure()

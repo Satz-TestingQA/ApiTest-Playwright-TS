@@ -1,0 +1,83 @@
+name: Playwright Test Automation
+
+on:
+  # Scheduled run at 6:00 AM UTC, Monday through Saturday
+  schedule:
+    - cron: '0 6 * * 1-6'
+
+  # Trigger on pull requests to master
+  pull_request:
+    branches: [ master ]
+
+  # Manual trigger option
+  workflow_dispatch:
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+
+    - name: Run Playwright UI tests
+      run: npm run test_ui
+
+    - name: Generate Allure Report
+      if: always()
+      run: |
+        npm run report:generate
+        mkdir -p reports/allure
+        cp -r allure-report/* reports/allure/
+
+    - name: Zip Allure Report
+      if: always()
+      run: |
+        powershell Compress-Archive -Path reports/allure/* -DestinationPath allure-report.zip
+
+    - name: Upload zipped Allure report artifact
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: allure-report
+        path: allure-report.zip
+        retention-days: 2
+
+    # - name: Send email with Allure report (on failure only)
+    #   if: failure()
+    #   uses: dawidd6/action-send-mail@v3
+    #   with:
+    #     server_address: smtp.gmail.com
+    #     server_port: 465
+    #     username: ${{ secrets.EMAIL_USERNAME }}
+    #     password: ${{ secrets.EMAIL_PASSWORD }}
+    #     subject: ⚠ Playwright Test FAILED - Run ${{ github.run_number }}
+    #     to: satzmails90@gmail.com
+    #     from: Playwright Bot <${{ secrets.EMAIL_USERNAME }}>
+    #     content_type: text/html
+    #     body: |
+    #       Hello,<br><br>
+    #       The scheduled Playwright test or pull request check has <b>FAILED</b>.<br>
+    #       <ul>
+    #         <li><b>Repository:</b> ${{ github.repository }}</li>
+    #         <li><b>Branch:</b> ${{ github.ref_name }}</li>
+    #         <li><b>Commit:</b> ${{ github.sha }}</li>
+    #         <li><b>Run ID:</b> ${{ github.run_id }}</li>
+    #       </ul>
+    #       <br>
+    #       Please find the attached <b>Allure Report</b> for details.<br><br>
+    #       Regards,<br>
+    #       GitHub Actions
+    #     attachments: allure-report.zip

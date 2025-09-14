@@ -1,0 +1,19 @@
+{
+    "default":{
+        "formatOptions": {
+            "snippetInterface": "async-await"
+        },
+        "paths": [
+            "src/test/api/features/*.feature"
+        ],
+        "dryRun": false,
+        "require": [
+            "src/test/api/steps/*.ts"
+        ],
+          "requireModule": ["ts-node/register"],
+          "format": [
+            "progress-bar"
+          ],
+          "parallel": 1    
+    }
+}

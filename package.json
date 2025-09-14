@@ -1,0 +1,30 @@
+{
+  "name": "ploaywright-qa-task1",
+  "version": "1.0.0",
+  "description": "this is for automation of playwright and bdd",
+  "keywords": [
+    "pw",
+    "ts",
+    "js"
+  ],
+  "license": "ISC",
+  "author": "tech",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "cucumber-js --config cucumber-api.json --format html:reports/api/cucumber-api-report.html"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.3.0",
+    "@playwright/test": "^1.49.1",
+    "@types/k6": "^0.54.2",
+    "cucumber-html-reporter": "^7.2.0",
+    "k6": "^0.0.0",
+    "playwright": "^1.54.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.0.1"
+  }
+}
